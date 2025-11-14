@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        .glitch {
+            position: relative;
+            font-size: 42px;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+            opacity: 0;
+            animation: fadeIn 8s ease-out forwards, glitch 7s infinite 4s;
+            margin-bottom: 80px;
+            letter-spacing: 2px;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            animation: glitch-top 2s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            -webkit-clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+        
+        .glitch::after {
+            animation: glitch-bottom 2.5s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+        
+        .input-container {
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 5s ease-out 3s forwards;
+        }
+        
+        input {
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            width: 300px;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            box-shadow: 0 0 20px #00ff00;
+            border-width: 2px;
+        }
+        
+        .error {
+            color: #ff0000;
+            margin-top: 25px;
+            font-size: 14px;
+            display: none;
+            text-shadow: 0 0 5px #ff0000;
+            animation: error-flicker 0.5s infinite;
+            letter-spacing: 1px;
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            opacity: 0.3;
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-1px, 1px); }
+            20% { transform: translate(1px, -1px); }
+            30% { transform: translate(-1px, -1px); }
+            40% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, 1px); }
+            60% { transform: translate(1px, -1px); }
+            70% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 1px); }
+            90% { transform: translate(-1px, 1px); }
+        }
+        
+        @keyframes glitch-top {
+            0%, 100% { transform: translate(0); opacity: 1; }
+            50% { transform: translate(1px, -1px); opacity: 0.8; }
+        }
+        
+        @keyframes glitch-bottom {
+            0%, 100% { transform: translate(0); opacity: 1; }
+            50% { transform: translate(-1px, 1px); opacity: 0.8; }
+        }
+        
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { top: 100%; opacity: 0; }
+        }
+        
+        @keyframes error-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            border: 1px solid #00ff00;
+            border-radius: 50%;
+            opacity: 0;
+            animation: pulse 15s linear infinite;
+        }
+        
+        .pulse:nth-child(2) {
+            animation-delay: 5s;
+        }
+        
+        .pulse:nth-child(3) {
+            animation-delay: 10s;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0.1; }
+            50% { opacity: 0.05; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="scanline"></div>
+    <div class="pulse"></div>
+    <div class="pulse"></div>
+    <div class="pulse"></div>
+    
+    <div class="container">
+        <div class="glitch" data-text="Something is going to happen here soon...">
+            Something is going to happen here soon...
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="commandInput" placeholder=">_">
+            <div class="error" id="errorMessage">SYSTEM ERROR: UNAUTHORIZED INPUT</div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('commandInput');
+        const error = document.getElementById('errorMessage');
+        
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                error.style.display = 'block';
+                input.value = '';
+                
+                setTimeout(() => {
+                    error.style.display = 'none';
+                }, 4000);
+            }
+        });
+        
+        setInterval(() => {
+            const hue = Math.random() * 20 - 10;
+            document.body.style.filter = `hue-rotate(${hue}deg)`;
+        }, 2000);
+        
+        document.addEventListener('mousemove', function(e) {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            document.querySelector('.container').style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+        });
+        
+        setInterval(() => {
+            const glitch = document.querySelector('.glitch');
+            glitch.style.animation = 'none';
+            setTimeout(() => {
+                glitch.style.animation = 'fadeIn 8s ease-out forwards, glitch 7s infinite 4s';
+            }, 100);
+        }, 15000);
+    </script>
+</body>
+</html>
